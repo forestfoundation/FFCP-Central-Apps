@@ -5,7 +5,6 @@ This repository contains the matching and calculations code along with data inpu
 ## Table of Contents
 
 - [Description](#description)  
-- [Project Structure](#project-structure)  
 - [Getting Started](#getting-started)  
 - [Data](#data)  
 - [Usage](#usage)  
@@ -17,25 +16,6 @@ This repository contains the matching and calculations code along with data inpu
 ## Description
 
 The code contained in this repository has been validated by Aster Global Inc and Verra under VM0045 v1.2 for the first reporting period (2020 - 2022). The repository is referenced in the PD and MR of the Family Forest Carbon Program for the purposes of project validation and verification. The R code and data inputs included herein follow the matching procedure provided in VM0045 Appendix A as well as the calculations and corresponding equations from the methodology. Auxilliary codes are called into the main matching and calculations scripts. 
-
----
-
-## Project Structure
-
-FFCP-Central-Apps/
-├── code/ # Analysis scripts
-
-├── data/
-
-│ ├── input/ # Raw input data
-
-│ └── output/ # Processed outputs, results, figures
-
-├── .gitignore # Files/folders ignored by Git
-
-├── README.md # Project documentation
-
-└── LICENSE # GNU GPL 3.0 license
 
 ---
 
@@ -77,7 +57,7 @@ Final aggregated calculations of VCUs and buffer credits are estimated using the
 
 ## License
 
-This project is licensed under the GNU GPL 3.0. See [LICENSE].
+This project is licensed under the GNU GPL 3.0. See [LICENSE](https://github.com/forestfoundation/FFCP-Central-Apps/blob/main/LICENSE).
 
 ---
 
