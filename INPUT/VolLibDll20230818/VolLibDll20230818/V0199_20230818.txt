@@ -1,0 +1,38 @@
+
+                           VOLUME ESTIMATOR LIBRARY BULLETIN
+                                      Issued By: Yingfang Wang
+
+                        MENSURATION AND SYSTEMS DEVELOPMENT SECTION
+                             FOREST MANAGEMENT SERVICE CENTER
+                                     FT. COLLINS, CO
+
+      BULLETIN NO: V0199_20230818
+     
+      DATE: 08-18-2023
+
+      ROUTINE(S): 
+
+	Modified routines:
+		mrules.f
+                blmtap.f
+		calcdia.f
+		r9clark.f
+		nsvb.f
+		r9logs.f
+		volinit.f
+		vernum.f
+
+
+	New routines:
+		
+            
+     MAIN TOPIC: 
+	(1)	Fixed divded by 0 in blmtap, DBHOB typo in calcdia and DIBL and WDSD value in nsvb.
+	(2)	Added initial value for MINLENT for R8 and R9 CLK and topwood log calculation for LEFTOV>MINLEN
+	(3)	Ckeck STUMP >0 before stump vol calculation
+     RESULT/IMPACT: 
+         
+
+     Getting downloads:
+
+	https://github.com/FMSC-Measurements/VolumeLibrary

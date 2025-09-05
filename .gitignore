@@ -1,0 +1,21 @@
+# ===========================
+# R
+# ===========================
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+*.Rproj
+*.zip
+*.gri
+
+Archive/
+RP1/
+RP2/
+INPUT/Cohort2020_Shapefiles/
+INPUT/Cohort2021_Shapefiles/
+INPUT/FFCP_InventoryData_T0_Cohort2020_TC.xlsx
+INPUT/FFCP_InventoryData_T0_Cohort2021_TC.xlsx
+INPUT/FFCP_InventoryData_T1_Cohort2021_TC.xlsx
+INPUT/FFCP_InventoryData_T2_Cohort2020_TC.xlsx
+OUTPUT_2024-06-27_submitted/
