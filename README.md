@@ -4,8 +4,7 @@ This repository contains the matching and calculations code along with data inpu
 
 ## Table of Contents
 
-- [Description](#description)  
-- [Getting Started](#getting-started)  
+- [Description](#description) 
 - [Data](#data)  
 - [Usage](#usage)  
 - [License](#license)  
@@ -21,7 +20,7 @@ The code contained in this repository has been validated by Aster Global Inc and
 
 ## Data
 
-- **Input Data**: Raw Datasets
+- **Input Data**: The input data contains PII for spatial data related to participating landowners. To request access to input and output data, please email: datarequest@forestfoundation.org 
 - **Output Data**: Intermediate and final outputs from the matching and calculations
 - **Notes**:  The project area and plot point shapefiles are not provided with the input data due to confidentiality of landowner property locations. They can be requested separately. The scripts for the first monitoring period are uploaded to the repository for validation. The FIA program has updated the database structure and it is no longer compatible with this version of the code. It should be compatible with the FIA data set downloaded in 2023 for this analysis. Future versions of the script will be updated to accommodate changes to the FIA database.
 
