@@ -1,0 +1,15 @@
+Region,Type,SFsaw,SFpulp
+Northeast,softwood,0.402,0.136
+Northeast,hardwood,0.437,0.323
+North Central,softwood,0.442,0.138
+North Central,hardwood,0.411,0.37
+Pacific Northwest (east),softwood,0.415,0.415
+Pacific Northwest (west),softwood,0.511,0.119
+Pacific Northwest (west),hardwood,0.284,0.284
+Pacific Southwest,softwood,0.444,0.444
+Rocky Mountain,softwood,0.463,0.463
+Southeast,softwood,0.423,0.191
+Southeast,hardwood,0.417,0.242
+South Central,softwood,0.415,0.215
+South Central,hardwood,0.393,0.229
+Other West,hardwood,0.357,0.357
