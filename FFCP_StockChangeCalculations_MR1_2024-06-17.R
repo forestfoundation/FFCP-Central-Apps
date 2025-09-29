@@ -21,7 +21,7 @@ library(sf)
 
 # Enter cohort, year, and measurement periods
 
-cohort <- "Cohort2020" # <- Enter "Cohort2020" to run for cohort 2020 and "Cohort2021" to run cohort 2021
+cohort <- "Cohort2021" # <- Enter "Cohort2020" to run for cohort 2020 and "Cohort2021" to run cohort 2021
 year <- ifelse(cohort=="Cohort2020", "2020","2021")
 tx <- "T0" # Stays the same
 ty <- ifelse(cohort=="Cohort2020","T2","T1")
