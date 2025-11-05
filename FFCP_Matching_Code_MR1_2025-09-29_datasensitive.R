@@ -81,6 +81,9 @@
          NA, 
          dir.create(paste0(output.folder,cohort,"/INDIVIDUAL MATCHES"), recursive=T))
 
+  # Create input folder
+  INPUT <- "INPUT_safe/"
+  
 #### Import Data ####
   # 
   # ### Measured field data ###
@@ -111,16 +114,16 @@
   
   # Download Reference Species Table from FIADB (access here: https://apps.fs.usda.gov/fia/datamart/CSV/datamart_csv.html)
   # **Check for periodic updates to REF_SPECIES table**
-  REF_SPECIES <- read.csv(paste0("INPUT/REF_SPECIES.csv"), na.strings = c("", "#N/A"))
+  REF_SPECIES <- read.csv(paste0(INPUT,"/REF_SPECIES.csv"), na.strings = c("", "#N/A"))
   
   # Download Stocking coefficient table for calculating FORTYPGRP
-  stk_coef <- read.csv(paste0("INPUT/STOCKING_COEFFICIENTS.csv"), na.strings = c("", "#N/A"))
+  stk_coef <- read.csv(paste0(INPUT,"STOCKING_COEFFICIENTS.csv"), na.strings = c("", "#N/A"))
   
   # Download Chapman-Richards coefficients to REF_SPECIES table (coefficients derived specifically for site trees present in inventory)
   # The coefficients were consolidated based on the site trees in the inventory.
   # New cohorts will require re-assessment of site tree species and the appropriate 
   # stand index equations and coefficients will need to be collated.
-  SI_LOCGRP <- read.csv(paste0("INPUT/SI_LOCGRP.csv"))
+  SI_LOCGRP <- read.csv(paste0(INPUT,"SI_LOCGRP.csv"))
   # Select the SI location group code based on states in which plots were sampled
   # Location code is used to determine the appropriate SI coefficients to use.
   # The Northeastern states all use region code S24 and apply the Westfall et al coefficients
@@ -128,17 +131,17 @@
   # coefficients will be applied.
   LOCATIONCD <- SI_LOCGRP$LOC_GRP[which(SI_LOCGRP$STATECD %in% plotlist$STATECD)]
   # Reference table with species specific coefficients from Westfall et al (only appropriate for NE US)
-  SI_REFTABLE_WESTFALL <- read.csv(paste0("INPUT/EQ_COEFF_WESTFALL.csv"))
+  SI_REFTABLE_WESTFALL <- read.csv(paste0(INPUT,"EQ_COEFF_WESTFALL.csv"))
   # Reference table with species specific coefficients from Scott and Voorhis
-  SI_REFTABLE_SV <- read.csv(paste0("INPUT/SI_REFTABLE_SV.csv"))
+  SI_REFTABLE_SV <- read.csv(paste0(INPUT,"SI_REFTABLE_SV.csv"))
   # Reference table of CONFIG_ID (based on location), SPECIES_NUM (SPCD), and SI_EQ (species specific SI equation code)
-  NIMS_SPECIES_CONFIG <- read.csv(paste0("INPUT/NIMS_SPECIES_CONFIG.csv"))
+  NIMS_SPECIES_CONFIG <- read.csv(paste0(INPUT,"NIMS_SPECIES_CONFIG.csv"))
   NIMS_SPECIES_CONFIG <- filter(NIMS_SPECIES_CONFIG, CONFIG_ID%in%LOCATIONCD)
   # Evaluate species coeffs available in Westfall and replace with S&V if unavailable
   SI_EQCODE <- speciescomp %>%
     left_join(NIMS_SPECIES_CONFIG, by = c("SPCD"="SPECIES_NUM"))
   # Reference table of site class bins based on location and species
-  NIMS_REF_RANGE_SITE_CLASS <- read.csv(paste0("INPUT/NIMS_REF_RANGE_SITE_CLASS.csv"))
+  NIMS_REF_RANGE_SITE_CLASS <- read.csv(paste0(INPUT,"NIMS_REF_RANGE_SITE_CLASS.csv"))
   NIMS_REF_RANGE_SITE_CLASS <- filter(NIMS_REF_RANGE_SITE_CLASS, LOC_GRP%in%LOCATIONCD)
     # Subset table to region
   # Join SI tables to create SI lookup table for Westfall coeffs and for Scott and Voorhis
@@ -150,7 +153,7 @@
 
   # Download list of states with intersection eco-subsections for cross-referencing states to gather FIA data.
   # Eco-subsection will be overlaid on a US state map to determine which states to select FIA data from.
-  ecolist <- read.csv(paste0("INPUT/EcoregionByState_Table_2021_05_03.csv"), 
+  ecolist <- read.csv(paste0(INPUT,"EcoregionByState_Table_2021_05_03.csv"), 
                     header=TRUE, 
                     sep = ',')
 
@@ -158,8 +161,8 @@
   # ### Spatial Data sets ###
   # 
   # # Download plot points and stand boundary shapefiles of the cohort being matched
-  # plotPts <- st_read(paste0("INPUT/", cohort, "_Shapefiles/FFCP_Plots_", cohort, ".shp")) # plot point shapefiles
-  # standBdry <- st_transform(st_zm(st_read(paste0("INPUT/", cohort, "_Shapefiles/FFCP_Stands_", cohort, ".shp"))), crs="EPSG:4326")
+  # plotPts <- st_read(paste0(INPUT, cohort, "_Shapefiles/FFCP_Plots_", cohort, ".shp")) # plot point shapefiles
+  # standBdry <- st_transform(st_zm(st_read(paste0(INPUT, cohort, "_Shapefiles/FFCP_Stands_", cohort, ".shp"))), crs="EPSG:4326")
   # standBdry <- standBdry[standBdry$Selected == "Yes",] # subset to only properties selected for sampling, Note: this only works if
   #                                                     # a selection attribute is added to the data
   # # create temporary table with unit codes and state codes
@@ -198,8 +201,8 @@
       #                 clip="bbox",
        #                src="aws")
 #    
-#   #writeRaster(DEM, paste0("INPUT/", cohort, "_stand_DEM_bbox"), overwrite=T) # Save downloaded DEM raster to avoid redownloading and reprocessing with each run
-#   DEM <- raster(paste0("INPUT/", cohort, "_stand_DEM_bbox.grd")) # Read already downloaded and processed DEM into R script
+#   #writeRaster(DEM, paste0(INPUT, cohort, "_stand_DEM_bbox"), overwrite=T) # Save downloaded DEM raster to avoid redownloading and reprocessing with each run
+#   DEM <- raster(paste0(INPUT, cohort, "_stand_DEM_bbox.grd")) # Read already downloaded and processed DEM into R script
 # #}
 #   
 #   # Download ecosubsection shapefile of the US
@@ -217,7 +220,7 @@
 #   states <- as.data.frame(unique(ecolist[which(ecolist$ecological.province %in% plotlist$ECOPROV), "State"])) # matches selected ecoprovinces to states to download correct FIA data
 #   colnames(states) <- "states"
 #   write_csv(states, paste0(output.folder, cohort, "_states.csv"))
-states <- read.csv(paste0("INPUT/",cohort,"_states.csv"))
+states <- read.csv(paste0(INPUT,cohort,"_states.csv"))
   # 
   # # Calculate slope at the stand level
   # # Uses 'raster' package to analyze DEMs
@@ -252,7 +255,7 @@ states <- read.csv(paste0("INPUT/",cohort,"_states.csv"))
   source("fortypgrp_calc.R")
   
   # Remove tables that are no longer needed
-  rm(ecolist, SI_LOCGRP, ecosub, NIMS_REF_RANGE_SITE_CLASS)
+  rm(ecolist, SI_LOCGRP, NIMS_REF_RANGE_SITE_CLASS)
   gc()
   
 # #**********************************************
@@ -363,6 +366,16 @@ states <- read.csv(paste0("INPUT/",cohort,"_states.csv"))
 #     standBdry_buff <- rbind(standBdry_buff, buff)
 #     
 #   }
+  # 
+  # # Find any FIA plots that are within 1.6km of stand boundaries
+  # fia_lat_lon <- subset(data$PLOT, select = c("CN", "LAT", "LON")) # subset FIA plot data based on selected plots and pull lat longs
+  # fia_lat_lon <- st_as_sf(fia_lat_lon, coords=c("LON", "LAT"), crs="EPSG:4269") # convert FIA plots to sf object
+  # intersecting_indices <- st_intersects(fia_lat_lon, standBdry_buff)
+  # FIA_plot_overlap <- fia_lat_lon[lengths(intersecting_indices)>0,]
+  # FIA_plot_overlap_list <- st_drop_geometry(FIA_plot_overlap)
+  # FIA_plot_overlap_list <- dplyr::select(FIA_plot_overlap_list, CN)
+  # write.csv(FIA_plot_overlap_list, "FIA_plot_overlap_list.csv") 
+  # 
 #   
 # #### Add parameters to treelist ####
 #   plotlist <- plotlist %>%
@@ -553,7 +566,7 @@ states <- read.csv(paste0("INPUT/",cohort,"_states.csv"))
 #     add_column(PLOTID = NA)
 
 # Read the stand list into the script which contains all covariates used for matching
-standlist <-  read.csv(paste0("INPUT/",cohort,"_standlist.csv"))
+standlist <-  read.csv(paste0(INPUT,cohort,"_standlist.csv"))
 
   
 #**********************************************
@@ -817,14 +830,20 @@ standlist <-  read.csv(paste0("INPUT/",cohort,"_standlist.csv"))
     plot.pool <- unique(data$COND[, "PLT_CN"]) # Create list of PLT_CN for donor pool plots
     plot.pool <- pull(plot.pool) # Convert plot.pool to vector of numeric values
     
-    # Remove donor pool plots that are within 1.6 km of any stand boundaries
+    # # Remove donor pool plots that are within 1.6 km of any stand boundaries
+    # fia_lat_lon <- subset(data$PLOT[which(data$PLOT$CN %in% plot.pool),], select = c("CN", "LAT", "LON")) # subset FIA plot data based on selected plots and pull lat longs
+    #   print(paste0(length(fia_lat_lon$CN), " donor plots selected before buffering"))
+    # fia_buffered_filt <- fia_lat_lon[!(fia_lat_lon %in% FIA_plot_overlap$CN)]
+    # fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt$CN)
+    #   print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))  
+    # 
+    FIA_plot_overlap <- read.csv(paste0(output.folder,"FIA_plot_overlap_list.csv"))
+    
     fia_lat_lon <- subset(data$PLOT[which(data$PLOT$CN %in% plot.pool),], select = c("CN", "LAT", "LON")) # subset FIA plot data based on selected plots and pull lat longs
-    fia_lat_lon <- st_as_sf(fia_lat_lon, coords=c("LON", "LAT"), crs="EPSG:4269") # convert FIA plots to sf object
-      print(paste0(length(fia_lat_lon$CN), " donor plots selected before buffering"))
-    fia_buffered <- st_difference(standBdry_buff, fia_lat_lon) # select all plots that do not intersect with buffered stand boundaries
-    fia_buffered_filt <-  unique(fia_buffered$CN)# subset dataframe of remaining plots
-    fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt)
-      print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))
+    print(paste0(length(fia_lat_lon$CN), " donor plots selected before buffering"))
+    fia_buffered_filt <- fia_lat_lon[!(fia_lat_lon %in% FIA_plot_overlap$CN)]
+    fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt$CN)
+    print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))  
     
 ## Use final iteration of COND table to subset TREE table
     tree.pool <- data$TREE[which(data$TREE$PLT_CN %in% fia_buffered_filt), ]

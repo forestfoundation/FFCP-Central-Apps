@@ -361,6 +361,15 @@ for(m in 1:length(STATECD)) {
     
   }
   
+  # Find any FIA plots that are within 1.6km of stand boundaries
+  fia_lat_lon <- subset(data$PLOT, select = c("CN", "LAT", "LON")) # subset FIA plot data based on selected plots and pull lat longs
+  fia_lat_lon <- st_as_sf(fia_lat_lon, coords=c("LON", "LAT"), crs="EPSG:4269") # convert FIA plots to sf object
+  intersecting_indices <- st_intersects(fia_lat_lon, standBdry_buff)
+  FIA_plot_overlap <- fia_lat_lon[lengths(intersecting_indices)>0,]
+  FIA_plot_overlap_list <- st_drop_geometry(FIA_plot_overlap)
+  FIA_plot_overlap_list <- dplyr::select(FIA_plot_overlap_list, CN)
+  write.csv(FIA_plot_overlap_list, "FIA_plot_overlap_list.csv") 
+  
 #### Add parameters to treelist ####
   plotlist <- plotlist %>%
       group_by(UNITCD) %>%
@@ -812,15 +821,20 @@ write.csv(fortypgrp_list, paste0(output.folder, "forest_type_groupcode_table", c
     
     # Remove donor pool plots that are within 1.6 km of any stand boundaries
     fia_lat_lon <- subset(data$PLOT[which(data$PLOT$CN %in% plot.pool),], select = c("CN", "LAT", "LON")) # subset FIA plot data based on selected plots and pull lat longs
-    fia_lat_lon <- st_as_sf(fia_lat_lon, coords=c("LON", "LAT"), crs="EPSG:4269") # convert FIA plots to sf object
       print(paste0(length(fia_lat_lon$CN), " donor plots selected before buffering"))
-    fia_buffered <- st_difference(standBdry_buff, fia_lat_lon) # select all plots that do not intersect with buffered stand boundaries
-    fia_buffered_filt <-  unique(fia_buffered$CN)# subset dataframe of remaining plots
-    fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt)
-      print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))
+    fia_buffered_filt <- fia_lat_lon[!(fia_lat_lon %in% FIA_plot_overlap$CN)]
+    fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt$CN)
+      print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))  
+    
+    # fia_lat_lon <- st_as_sf(fia_lat_lon, coords=c("LON", "LAT"), crs="EPSG:4269") # convert FIA plots to sf object
+    #   print(paste0(length(fia_lat_lon$CN), " donor plots selected before buffering"))
+    # fia_buffered <- st_difference(standBdry_buff, fia_lat_lon) # select all plots that do not intersect with buffered stand boundaries
+    # fia_buffered_filt <-  unique(fia_buffered$CN)# subset dataframe of remaining plots
+    # fia_lat_lon <- filter(fia_lat_lon, CN %in% fia_buffered_filt)
+    #   print(paste0(length(fia_lat_lon$CN), " donor plots selected after buffering"))
     
 ## Use final iteration of COND table to subset TREE table
-    tree.pool <- data$TREE[which(data$TREE$PLT_CN %in% fia_buffered_filt), ]
+    tree.pool <- data$TREE[which(data$TREE$PLT_CN %in% fia_buffered_filt$CN), ]
     
     # subset plots where T2 measurement is more than 7 years after initial measurement  ######
     tree.pool <- tree.pool[which((tree.pool$MEASYEAR.prev - tree.pool$MEASYEAR) < 8),] 
@@ -1313,7 +1327,11 @@ for (treatment in 1:nrow(standlist)) {
   treatment = treatment + 1
 }
 
-    
+
+# Save distances from datamatching
+    control.dist <- data.matching$dist
+    write.csv(control.dist, paste0(output.folder,"/",cohort,"plot_distances.csv"))
+        
 # Convert numeric columns from character to numeric
 matches[,8:23] <- as.data.frame(sapply(matches[,8:23], as.numeric))
 treat.comp.controls[,8:23] <- as.data.frame(sapply(treat.comp.controls[,8:23], as.numeric))

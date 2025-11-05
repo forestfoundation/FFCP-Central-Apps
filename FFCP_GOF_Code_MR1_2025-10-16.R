@@ -7,6 +7,8 @@
 # selected for the dynamic baseline as prescribed
 # in VM0045 under the VCS Standard. The code evaluates
 # the data outputs from the "FFCP_Matching_Code".
+
+# This code has been updated to follow v1.2 of the methodology (2025-10-16)
 #############################
 
 ## Goodness of Fit for matches is determined at the project scale, 
@@ -25,7 +27,7 @@ library(readxl) # sub-package of tidyverse
 library(cobalt) # evaluates matching balance
 
 # Set output directory to pull output data from
-output.folder <- "OUTPUT_2024-06-27_submitted/"
+output.folder <- "OUTPUT_2024-06-19/"
 
 # Load and combine cohorts for GOF analysis
 comp.controls_1 = read.csv(paste0(output.folder, "Cohort2020_Composite Controls.csv"))
@@ -43,18 +45,20 @@ standlist = rbind(standlist_1, standlist_2)
 control = rbind(control_1, control_2)
 matches = rbind(matches_1, matches_2)
 
+# Equation A2
 ## Calculate SDMs as part of a vector
-SDMs = c(abs(mean(standlist$SLOPE) - mean(as.numeric(comp.controls$SLOPE))) / sd(standlist$SLOPE),
-         abs(mean(standlist$QMD) - mean(as.numeric(comp.controls$QMD))) / sd(standlist$QMD),
-         abs(mean(standlist$RDDISTCD) - mean(as.numeric(comp.controls$RDDISTCD))) / sd(standlist$RDDISTCD),
-         abs(mean(standlist$RD.comm) - mean(as.numeric(comp.controls$RD.comm))) / sd(standlist$RD.comm),
-         abs(mean(standlist$RD.sap) - mean(as.numeric(comp.controls$RD.sap))) / sd(standlist$RD.sap),
-         abs(mean(standlist$STDAGE) - mean(as.numeric(comp.controls$STDAGE))) / sd(standlist$STDAGE),
-         abs(mean(standlist$SITECLCD) - mean(as.numeric(comp.controls$SITECLCD))) / sd(standlist$SITECLCD))
+SDMs = c(abs(mean(standlist$SLOPE) - mean(as.numeric(comp.controls$SLOPE))) / sqrt((sd(standlist$SLOPE)^2+sd(comp.controls$SLOPE)^2)/2),
+         abs(mean(standlist$QMD) - mean(as.numeric(comp.controls$QMD))) / sqrt((sd(standlist$QMD)^2+sd(comp.controls$QMD)^2)/2),
+         abs(mean(standlist$RDDISTCD) - mean(as.numeric(comp.controls$RDDISTCD))) / sqrt((sd(standlist$RDDISTCD)^2+sd(comp.controls$RDDISTCD)^2)/2),
+         abs(mean(standlist$RD.comm) - mean(as.numeric(comp.controls$RD.comm))) / sqrt((sd(standlist$RD.comm)^2+sd(comp.controls$RD.comm)^2)/2),
+         abs(mean(standlist$RD.sap) - mean(as.numeric(comp.controls$RD.sap))) / sqrt((sd(standlist$RD.sap)^2+sd(comp.controls$RD.sap)^2)/2),
+         abs(mean(standlist$STDAGE) - mean(as.numeric(comp.controls$STDAGE))) / sqrt((var(standlist$STDAGE)+var(comp.controls$STDAGE))/2),
+         abs(mean(standlist$SITECLCD) - mean(as.numeric(comp.controls$SITECLCD))) / sqrt((sd(standlist$SITECLCD)^2+sd(comp.controls$SITECLCD)^2)/2))
 
 ## Create Goodness of fit dataframe, to view and output
 GOF = data.frame(Covariate = c("SLOPE", "QMD", "RDDISTCD", "RD.comm", "RD.sap", "STDAGE", "SITECLCD"),
                  SDM = SDMs)
+
 GOF
 
 
