@@ -63,4 +63,5 @@ This project is licensed under the GNU GPL 3.0. See [LICENSE](https://github.com
 ## Acknowledgements
 
 Data Source: USDA Forest Inventory and Analysis (FIA) Program, all participating landowners, American Forest Foundation (AFF), The Nature Conservancy (TNC), Verra, TerraCarbon LLC
+
 Tools and libraries used: rFIA, tidyverse, optmatch, tigris
